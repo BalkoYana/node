@@ -17,6 +17,33 @@ async function apartmentByIdValidation(req, res, next) {
             throw createError.NotFound("apartment with such id not found");
         }
 
+
+
+
+        next();
+    } catch (err) {
+        next(err);
+    }
+};
+function calculateAverage(req, res, next) {
+    try {
+        const { area, rooms } = req.body;
+
+
+
+        if (!area || !rooms) {
+            throw createError.BadRequest("area and rooms are required fields");
+        }
+
+        const aver = area / rooms;
+
+
+        res.locals.aver = aver;
+        res.json({
+            apartment: req.body,
+            aver: aver
+        });
+
         next();
     } catch (err) {
         next(err);
@@ -24,6 +51,9 @@ async function apartmentByIdValidation(req, res, next) {
 };
 const apartmentCreateValidation = async (req, res, next) => {
     try {
+
+
+
         const { error } = ApartmentCreateSchema.validate(req.body);
 
         if (error) {
@@ -31,14 +61,17 @@ const apartmentCreateValidation = async (req, res, next) => {
         }
         const apartment = await apartmentService.findOne({
             $or: [
-                { district: req.body.district },
-                { price: req.body.price },
+                { owner: req.body.owner },
+
             ]
 
         });
+
         if (apartment) {
-            throw createError.BadRequest("apartment with such district or price already exist");
+            throw createError.BadRequest("apartment with such owner already exist");
         }
+
+
         next();
     }
     catch (err) {
@@ -53,23 +86,22 @@ const apartmentUpdateValidation = async (req, res, next) => {
         if (error) {
             throw createError.BadRequest(error.details[0].message);
         }
-        if (req.body.district || req.body.price) {
+        if (req.body.owner) {
             const orExpression = [];
-            if (req.body.district) {
-                orExpression.push({ district: req.body.district });
+            if (req.body.owner) {
+                orExpression.push({ owner: req.body.owner });
 
             }
-            if (req.body.price) {
-                orExpression.push({ price: req.body.price });
-            }
+
             const apartment = await apartmentService.findOne({
                 _id: {
                     $ne: req.params.apartmentId
                 },
                 $or: orExpression
             });
+
             if (apartment) {
-                throw createError.BadRequest("apartment with such district or price already exist");
+                throw createError.BadRequest("apartment with such owner already exist");
             }
         }
         next();
@@ -81,5 +113,6 @@ const apartmentUpdateValidation = async (req, res, next) => {
 module.exports = {
     apartmentByIdValidation,
     apartmentCreateValidation,
-    apartmentUpdateValidation
+    apartmentUpdateValidation,
+    calculateAverage
 };
