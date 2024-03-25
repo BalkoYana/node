@@ -1,9 +1,13 @@
 
+const bcrypt = require('bcrypt');
 const apartmentModel = require('../models/apartment.model.js');
 
 
 async function create(apartment) {
-    return apartmentModel.create(apartment);
+    const apartmentClone = { ...apartment };
+    const hashedPassword = await bcrypt.hash(apartmentClone.password, 10);
+    apartmentClone.password = hashedPassword;
+    return apartmentModel.create(apartmentClone);
 }
 
 async function find({ searchString = '', page = 1, perPage = 20 }) {

@@ -4,9 +4,11 @@ const router = express.Router();
 const controller = require('../controllers/apartments.controller');
 const middleware = require('../middlewares/apartments.middleware');
 
+const { authenticationCheck } = require('../middlewares/auth.middleware');
 router.route('/')
     .get(controller.getApartments)
     .post(middleware.apartmentCreateValidation, middleware.calculateAverage, controller.createApartment);
+router.use(authenticationCheck);
 
 router.route('/:apartmentId')
     .get(middleware.apartmentByIdValidation, middleware.calculateAverage, controller.getApartment)

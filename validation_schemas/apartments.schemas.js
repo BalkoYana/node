@@ -29,6 +29,10 @@ const ApartmentCreateSchema = Joi.object({
     price: Joi.number()
         .min(10000)
         .required(),
+    password: Joi.string()
+        .required()
+        .min(6)
+        .max(10),
 });
 const ApartmentUpdateSchema = Joi.object({
     district: Joi.string()
@@ -53,6 +57,10 @@ const ApartmentUpdateSchema = Joi.object({
         .max(60),
     price: Joi.number()
         .min(10000),
+    password: Joi.string()
+        .required()
+        .min(6)
+        .max(10),
 });
 module.exports = {
     ApartmentCreateSchema,

@@ -31,6 +31,9 @@ const apartmentSchema = new Schema({
         required: true,
         trim: true,
     },
+    password: {
+        type: String,
+    },
 
 
 

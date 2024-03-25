@@ -4,6 +4,8 @@ const createError = require('http-errors');
 const { port, mongodb_url } = require('./config');
 const apartmentsRouter = require('./routes/apartments.route');
 
+const authRouter = require('./routes/auth.route');
+
 mongoose.connect(mongodb_url).then(() => {
     console.log('Mongo DB connected');
 })
@@ -29,7 +31,7 @@ app.get('/', (req, res) => {
     })
 });
 
-
+app.use('/auth', authRouter);
 
 app.use('/apartments', apartmentsRouter);
 

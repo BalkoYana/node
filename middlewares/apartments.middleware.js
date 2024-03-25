@@ -56,6 +56,14 @@ const apartmentCreateValidation = async (req, res, next) => {
 
         const { error } = ApartmentCreateSchema.validate(req.body);
 
+        const { password } = req.body;
+        const passwordRegex = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*\W).+$/;
+
+        if (!passwordRegex.test(password)) {
+            return res.status(400).send('Пароль повинен містити принаймні одну цифру і один символ, який не є буквою.');
+        }
+
+
         if (error) {
             throw createError.BadRequest(error.details[0].message);
         }
